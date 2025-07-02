@@ -1,22 +1,27 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation"; // Next.jsのルーター機能をインポート
+import { useRouter } from "next/navigation";
 import { questions, Question } from "@/lib/questions";
 
 export default function Home() {
-  const router = useRouter(); // routerを初期化
+  const router = useRouter();
   const [todayQuestion, setTodayQuestion] = useState<Question | null>(null);
   const [votedOption, setVotedOption] = useState<string | null>(null);
-  const [isVoted, setIsVoted] = useState(false);
-  const [isLoading, setIsLoading] = useState(true); // ローディング状態を追加
+  const [isVoted, setIsVoted] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
 
   // コンポーネントのマウント時に投票履歴を確認し、必要ならリダイレクト
   useEffect(() => {
-    const questionIdForToday = "2025-07-02"; // テスト用に日付を固定
+    // ローディング中のフラグをセット
+    setIsLoading(true);
+
+    // 今日の質問を取得
+    const questionIdForToday = getTodayDateString();
     const question = questions.find((q) => q.id === questionIdForToday);
 
     if (question) {
+      // ローカルストレージに保存された投票履歴を確認
       const savedVote = localStorage.getItem(`vote_${question.id}`);
       if (savedVote) {
         // 既に投票済みなら、結果ページへ自動で遷移
@@ -46,14 +51,24 @@ export default function Home() {
     }, 300); // 0.3秒後に遷移
   };
 
-  // 投票ボタンのスタイルを動的に変更するための関数 (変更なし)
-  const getButtonClass = (option: "optionA" | "optionB") => {
-    const baseClass =
+  // 今日の日付を取得(yyyy-mm-dd)
+  const getTodayDateString = (): string => {
+    const today: Date = new Date();
+    today.setHours(today.getHours() + 9);
+    return today.toISOString().split("T")[0];
+  };
+
+  // 投票ボタンのスタイルを動的に変更するための関数
+  const getButtonClass = (option: "optionA" | "optionB"): string => {
+    const baseClass: string =
       "w-full p-5 rounded-xl text-lg font-semibold text-white transition-all duration-300 ease-in-out shadow-lg transform";
+    // 未投票の場合, どちらも普通サイズのオレンジ色
     if (!isVoted)
       return `${baseClass} bg-orange-400 hover:bg-orange-500 hover:-translate-y-1 hover:shadow-xl active:scale-95`;
+    // 投票済みの場合, 投票した方のみ大きくする
     if (votedOption === option)
       return `${baseClass} bg-orange-500 scale-105 shadow-2xl ring-4 ring-white/50`;
+    // 投票されていない方をグレーにする
     return `${baseClass} bg-gray-300 text-gray-600 scale-95 opacity-70`;
   };
 
@@ -73,6 +88,7 @@ export default function Home() {
         <div className="bg-white rounded-2xl shadow-lg shadow-orange-400/10 border border-orange-400/10 p-6 sm:p-8">
           <div className="flex justify-center mb-6">
             <div className="inline-block bg-gradient-to-br from-orange-100 to-orange-200 text-orange-700 font-semibold px-5 py-2 rounded-full text-sm border border-orange-400/20">
+              {/* 今日の日付を表示 */}
               {new Date(todayQuestion.id).toLocaleDateString("ja-JP", {
                 month: "numeric",
                 day: "numeric",

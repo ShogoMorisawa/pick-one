@@ -9,7 +9,7 @@ export interface Question {
 
 export const questions: Question[] = [
   {
-    id: "2025-07-02", // 今日の日付に合わせておくとテストしやすい
+    id: "2025-07-02",
     text: "朝ごはんは、パン？ごはん？",
     optionA: "パン 🍞",
     optionB: "ごはん 🍙",
@@ -18,17 +18,41 @@ export const questions: Question[] = [
   },
   {
     id: "2025-07-03",
-    text: "きのこの山とたけのこの里、どっちが好き？",
-    optionA: "きのこの山 🍄",
-    optionB: "たけのこの里🎍",
+    text: "朝ごはんは、パン？ごはん？",
+    optionA: "パン 🍞",
+    optionB: "ごはん 🍙",
     optionACount: 120,
     optionBCount: 130,
   },
   {
     id: "2025-07-04",
-    text: "休日の過ごし方、インドア派？アウトドア派？",
-    optionA: "インドア派 🏠",
-    optionB: "アウトドア派 🏕️",
+    text: "朝ごはんは、パン？ごはん？",
+    optionA: "パン 🍞",
+    optionB: "ごはん 🍙",
+    optionACount: 120,
+    optionBCount: 130,
+  },
+  {
+    id: "2025-07-05",
+    text: "朝ごはんは、パン？ごはん？",
+    optionA: "パン 🍞",
+    optionB: "ごはん 🍙",
+    optionACount: 120,
+    optionBCount: 130,
+  },
+  {
+    id: "2025-07-06",
+    text: "朝ごはんは、パン？ごはん？",
+    optionA: "パン 🍞",
+    optionB: "ごはん 🍙",
+    optionACount: 120,
+    optionBCount: 130,
+  },
+  {
+    id: "2025-07-07",
+    text: "朝ごはんは、パン？ごはん？",
+    optionA: "パン 🍞",
+    optionB: "ごはん 🍙",
     optionACount: 120,
     optionBCount: 130,
   },
