@@ -106,7 +106,7 @@ export default function ResultPage() {
   };
 
   return (
-    <div className="w-full max-w-lg mx-auto px-4 py-8 sm:py-12 flex flex-col items-center">
+    <div className="w-full max-w-lg mx-auto px-4 py-8 sm:py-12 pt-20 flex flex-col items-center">
       <div className="bg-white rounded-2xl shadow-lg shadow-orange-400/10 border border-orange-400/10 p-6 sm:p-8 w-full text-center">
         <h2 className="text-lg sm:text-xl font-bold text-gray-800 mb-2">
           投票結果
