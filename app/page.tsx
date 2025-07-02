@@ -4,13 +4,6 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation"; // Next.jsのルーター機能をインポート
 import { questions, Question } from "@/lib/questions";
 
-// --- ヘルパー関数 ---
-const getTodayDateString = () => {
-  const today = new Date();
-  today.setHours(today.getHours() + 9);
-  return today.toISOString().split("T")[0];
-};
-
 export default function Home() {
   const router = useRouter(); // routerを初期化
   const [todayQuestion, setTodayQuestion] = useState<Question | null>(null);
@@ -70,7 +63,7 @@ export default function Home() {
   }
 
   return (
-    <div className="w-full max-w-lg mx-auto px-4 py-8 sm:py-12">
+    <div className="w-full max-w-lg mx-auto px-4 py-8 sm:py-12 pt-20">
       {!todayQuestion ? (
         <div className="text-center text-gray-600">
           <h2 className="text-xl font-semibold">今日の質問は準備中です。</h2>

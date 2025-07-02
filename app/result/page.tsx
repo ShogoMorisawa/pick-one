@@ -47,11 +47,19 @@ export default function ResultPage() {
     return null;
   }
 
+  // --- ▼ここからが新しいロジック▼ ---
+  // 1. 合計投票数とパーセンテージを計算する
+  const totalVotes = question.optionACount + question.optionBCount;
+  const optionAPercentage =
+    totalVotes > 0 ? Math.round((question.optionACount / totalVotes) * 100) : 0;
+  const optionBPercentage = 100 - optionAPercentage; // 合計が100%になるように調整
+
+  // 2. グラフのデータを、自分の投票(100%)から全体の投票数に差し替える
   const chartData = {
     labels: [question.optionA, question.optionB],
     datasets: [
       {
-        data: [vote === "optionA" ? 100 : 0, vote === "optionB" ? 100 : 0],
+        data: [question.optionACount, question.optionBCount], // ★変更点
         backgroundColor: ["#f97316", "#fb923c"],
         borderColor: "#fff",
         borderWidth: 4,
@@ -60,10 +68,9 @@ export default function ResultPage() {
     ],
   };
 
-  // グラフのオプションを更新
   const chartOptions = {
-    responsive: true, // コンテナのサイズに追従させる
-    maintainAspectRatio: false, // ★変更点1: アスペクト比を維持せず、親要素に完全にフィットさせる
+    responsive: true,
+    maintainAspectRatio: false,
     plugins: {
       legend: {
         display: false,
@@ -79,18 +86,44 @@ export default function ResultPage() {
     <div className="w-full max-w-lg mx-auto px-4 py-8 sm:py-12 flex flex-col items-center">
       <div className="bg-white rounded-2xl shadow-lg shadow-orange-400/10 border border-orange-400/10 p-6 sm:p-8 w-full text-center">
         <h2 className="text-lg sm:text-xl font-bold text-gray-800 mb-2">
-          あなたが選んだのは...
+          投票結果
         </h2>
-        <p className="text-2xl sm:text-3xl font-bold text-orange-500 mb-6">
-          「{vote === "optionA" ? question.optionA : question.optionB}」
+        <p className="text-gray-600 mb-6">
+          あなたは「
+          <span className="font-bold text-orange-500">
+            {vote === "optionA" ? question.optionA : question.optionB}
+          </span>
+          」に投票しました
         </p>
 
-        {/* ★変更点2: グラフを囲うdivに `relative` と `aspect-square` を追加 */}
         <div className="relative w-full max-w-[250px] mx-auto mb-6 aspect-square">
           <Pie data={chartData} options={chartOptions} />
         </div>
 
-        <p className="text-gray-600 mb-6">投票ありがとう！</p>
+        {/* 3. パーセンテージ表示用のコンポーネントを追加 */}
+        <div className="w-full max-w-xs mx-auto space-y-3 text-left">
+          <div className="flex justify-between items-center p-3 bg-orange-50 rounded-lg">
+            <span className="font-semibold text-gray-700">
+              {question.optionA}
+            </span>
+            <span className="font-bold text-orange-600 text-lg">
+              {optionAPercentage}%
+            </span>
+          </div>
+          <div className="flex justify-between items-center p-3 bg-orange-50 rounded-lg">
+            <span className="font-semibold text-gray-700">
+              {question.optionB}
+            </span>
+            <span className="font-bold text-orange-600 text-lg">
+              {optionBPercentage}%
+            </span>
+          </div>
+        </div>
+
+        {/* 4. 合計票数を表示 */}
+        <p className="text-sm text-gray-500 mt-6 mb-6">
+          合計 {totalVotes.toLocaleString()} 票
+        </p>
 
         <button
           onClick={handleResetVote}

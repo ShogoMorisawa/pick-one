@@ -27,7 +27,7 @@ export default function RootLayout({
       >
         <Header />
         {/* children（各ページの内容）がこのmainタグの中に表示される */}
-        <main className="flex-grow w-full flex flex-col items-center justify-center overflow-y-auto bg-orange-50">
+        <main className="flex-grow w-full flex flex-col items-center overflow-y-auto bg-orange-50">
           {children}
         </main>
         <Footer />
