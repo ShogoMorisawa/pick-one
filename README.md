@@ -1,36 +1,65 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# どっち派？ (Which Prefer)
 
-## Getting Started
+> 🗳️ 投票を通じて“違い”を楽しむ、思想的な投票アプリ
 
-First, run the development server:
+---
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## ✨ コンセプト
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+**選ぶことは、自分の視点を表現する行為。**
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+このアプリは、単なる多数決のツールではありません。  
+「朝ごはんはパン？ごはん？」といった日常の何気ない二者択一を通じて、  
+**自分と他者の“選択の違い”そのものを楽しむ**ことを目的としています。
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+勝敗を決めるのではなく、そこに存在する多様な「理由」や「価値観」に光を当てる。  
+少しだけ世界が面白く見える、そんな体験を目指しました。
 
-## Learn More
+> UIは軽やかに。  
+> でも、根底に流れる思想は深く。  
+> そのバランスを大切にしています。
 
-To learn more about Next.js, take a look at the following resources:
+---
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## 🚀 主な機能
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- ✅ **日替わりの2択投票**  
+  毎日新しい問いに出会えます。
 
-## Deploy on Vercel
+- ✅ **リアルタイムな結果表示**  
+  投票後すぐに、円グラフで“みんな”の選択が視覚化されます。
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- ✅ **投票履歴の保持（localStorage）**  
+  同じ質問に複数回投票できないよう制御しています。
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- ✅ **コメント機能（UIのみ）**  
+  「なぜそれを選んだのか？」という対話のきっかけとなるコメント欄を表示。  
+  投稿機能は今後のアップデートで追加予定です。
+
+---
+
+## 🛠️ 技術スタック
+
+| カテゴリ         | 使用技術                                                                                                                              |
+| :--------------- | :------------------------------------------------------------------------------------------------------------------------------------ |
+| **フロントエンド** | ![Next.js](https://img.shields.io/badge/Next.js-000000?style=for-the-badge&logo=next.js&logoColor=white) ![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=for-the-badge&logo=typescript&logoColor=white) ![React](https://img.shields.io/badge/React-61DAFB?style=for-the-badge&logo=react&logoColor=black) |
+| **スタイリング** | ![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-06B6D4?style=for-the-badge&logo=tailwindcss&logoColor=white)                   |
+| **状態管理** | `useState`, `useEffect`, `localStorage`                                                                                               |
+| **グラフ描画** | `Chart.js`, `react-chartjs-2`                                                                                                         |
+| **デプロイ** | ![Vercel](https://img.shields.io/badge/Vercel-000000?style=for-the-badge&logo=vercel&logoColor=white)                                     |
+
+---
+
+## 🧪 現在のステータス
+
+このアプリは現在、**MVP（最小実用機能）まで完成した段階**です。  
+「投票 → 結果 → コメントを読む」までの一連の体験はすでに提供されています。  
+今後、以下の機能を追加しながら、より深く・広く“違いを楽しむ場”を育てていきます。
+
+---
+
+## 🔮 今後の実装予定
+
+- [ ] **コメント投稿の保存機能**（localStorageまたはSupabase）
+- [ ] **投票結果の集計**
+- [ ] **管理画面による質問予約投稿**
