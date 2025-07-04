@@ -2,7 +2,16 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { questions, Question } from "@/lib/questions";
+import { supabase } from "@/lib/supabaseClient";
+
+interface Question {
+  id: string;
+  question_text: string;
+  choice_a_text: string;
+  choice_b_text: string;
+  choice_a_count: number;
+  choice_b_count: number;
+}
 
 export default function Home() {
   const router = useRouter();
@@ -11,43 +20,76 @@ export default function Home() {
   const [isVoted, setIsVoted] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
-  // コンポーネントのマウント時に投票履歴を確認し、必要ならリダイレクト
   useEffect(() => {
-    setIsLoading(true);
-    const questionIdForToday = getTodayDateString();
-    const question = questions.find((q) => q.id === questionIdForToday);
+    const fetchQuestion = async () => {
+      setIsLoading(true);
 
-    if (question) {
-      const savedVote = localStorage.getItem(`vote_${question.id}`);
-      if (savedVote) {
-        router.push("/result");
-      } else {
-        setTodayQuestion(question);
+      const now = new Date();
+      const year = now.getFullYear();
+      const month = now.getMonth();
+      const date = now.getDate();
+
+      // JSTの今日の0時と翌日の0時をUTCで表現
+      const startOfDayJST = new Date(Date.UTC(year, month, date, -9, 0, 0));
+      const endOfDayJST = new Date(Date.UTC(year, month, date + 1, -9, 0, 0));
+
+      const { data, error } = await supabase
+        .from("questions")
+        .select("*")
+        .gte("publish_at", startOfDayJST.toISOString())
+        .lt("publish_at", endOfDayJST.toISOString())
+        .order("publish_at", { ascending: false })
+        .limit(1);
+
+      if (error) {
+        console.error("Error fetching question:", error);
         setIsLoading(false);
+        return;
       }
-    } else {
+
+      if (data && data.length > 0) {
+        const question = data[0];
+        const savedVote = localStorage.getItem(`vote_${question.id}`);
+        if (savedVote) {
+          router.push("/result");
+        } else {
+          setTodayQuestion(question);
+        }
+      }
       setIsLoading(false);
-    }
+    };
+
+    fetchQuestion();
   }, [router]);
 
-  // (handleVote, getTodayDateString, getButtonClassは変更なし)
-  const handleVote = (option: "optionA" | "optionB") => {
+  const handleVote = async (option: "choice_a_count" | "choice_b_count") => {
     if (isVoted || !todayQuestion) return;
     setVotedOption(option);
     setIsVoted(true);
     localStorage.setItem(`vote_${todayQuestion.id}`, option);
+
+    const { error } = await supabase.rpc("increment_vote", {
+      question_id: todayQuestion.id,
+      field_name: option,
+    });
+
+    if (error) {
+      console.error("Error incrementing vote:", error);
+      // エラーが発生した場合、投票状態をリセットするなどのフォールバック処理を検討
+      setIsVoted(false);
+      setVotedOption(null);
+      localStorage.removeItem(`vote_${todayQuestion.id}`);
+      return;
+    }
+
     setTimeout(() => {
       router.push("/result");
     }, 300);
   };
 
-  const getTodayDateString = (): string => {
-    const today: Date = new Date();
-    today.setHours(today.getHours() + 9);
-    return today.toISOString().split("T")[0];
-  };
-
-  const getButtonClass = (option: "optionA" | "optionB"): string => {
+  const getButtonClass = (
+    option: "choice_a_count" | "choice_b_count"
+  ): string => {
     const baseClass: string =
       "w-full p-5 rounded-xl text-lg font-semibold text-white transition-all duration-300 ease-in-out shadow-lg transform";
     if (!isVoted)
@@ -62,7 +104,6 @@ export default function Home() {
   }
 
   return (
-    // pt-20を削除し、レイアウトは親(main)に任せる
     <div className="w-full max-w-lg mx-auto">
       {!todayQuestion ? (
         <div className="text-center text-gray-600">
@@ -73,30 +114,26 @@ export default function Home() {
         <div className="bg-white rounded-2xl shadow-lg shadow-orange-400/10 border border-orange-400/10 p-6 sm:p-8">
           <div className="flex justify-center mb-6">
             <div className="inline-block bg-gradient-to-br from-orange-100 to-orange-200 text-orange-700 font-semibold px-5 py-2 rounded-full text-sm border border-orange-400/20">
-              {new Date(todayQuestion.id).toLocaleDateString("ja-JP", {
-                month: "numeric",
-                day: "numeric",
-              })}
-              のどっち？
+              今日のどっち？
             </div>
           </div>
           <h2 className="text-2xl sm:text-3xl font-bold text-gray-800 text-center leading-tight mb-8">
-            {todayQuestion.text}
+            {todayQuestion.question_text}
           </h2>
           <div className="flex flex-col sm:flex-row gap-4 sm:gap-6 mb-6">
             <button
-              onClick={() => handleVote("optionA")}
+              onClick={() => handleVote("choice_a_count")}
               disabled={isVoted}
-              className={getButtonClass("optionA")}
+              className={getButtonClass("choice_a_count")}
             >
-              {todayQuestion.optionA}
+              {todayQuestion.choice_a_text}
             </button>
             <button
-              onClick={() => handleVote("optionB")}
+              onClick={() => handleVote("choice_b_count")}
               disabled={isVoted}
-              className={getButtonClass("optionB")}
+              className={getButtonClass("choice_b_count")}
             >
-              {todayQuestion.optionB}
+              {todayQuestion.choice_b_text}
             </button>
           </div>
           <p className="text-center text-gray-500 text-sm font-medium">

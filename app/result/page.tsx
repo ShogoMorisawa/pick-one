@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { questions, Question } from "@/lib/questions";
 import { Pie } from "react-chartjs-2";
 import {
   Chart as ChartJS,
