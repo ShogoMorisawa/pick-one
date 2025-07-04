@@ -26,8 +26,8 @@ export default function RootLayout({
         className={`${notoSansJP.variable} flex flex-col h-screen overflow-hidden`}
       >
         <Header />
-        {/* children（各ページの内容）がこのmainタグの中に表示される */}
-        <main className="flex-grow w-full flex flex-col items-center overflow-y-auto bg-orange-50">
+        {/* mainタグに直接パディングを追加して、レイアウトを制御する */}
+        <main className="flex-grow w-full flex flex-col items-center overflow-y-auto bg-orange-50 pt-20 px-4 sm:px-8 pb-4 sm:pb-8">
           {children}
         </main>
         <Footer />
