@@ -2,22 +2,19 @@ import { Suspense } from "react";
 import ResultView from "./ResultView";
 import CommentSection from "./CommentSection";
 import { createClient } from "@/lib/supabaseServer";
-import { redirect } from "next/navigation";
+import { redirect, notFound } from "next/navigation";
 import type { Metadata } from "next";
-import { notFound } from "next/navigation";
 
-export async function generateMetadata({
-  searchParams,
-}: {
-  searchParams: { id?: string };
-}): Promise<Metadata> {
-  const questionId = searchParams.id;
-  if (!questionId) {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export async function generateMetadata(props: any): Promise<Metadata> {
+  const { searchParams } = props;
+  const questionId = Number(searchParams?.id);
+
+  if (isNaN(questionId)) {
     return { title: "結果" };
   }
 
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
-
   const supabase = await createClient();
   const { data: question } = await supabase
     .from("questions")
