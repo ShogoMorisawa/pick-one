@@ -17,6 +17,8 @@ import type { Question } from "@/lib/types";
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
+export const dynamic = "force-dynamic";
+
 export default function ResultPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
