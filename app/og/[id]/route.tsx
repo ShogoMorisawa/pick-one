@@ -108,9 +108,14 @@ export async function GET(
         height: 630,
       }
     );
-  } catch (e: any) {
-    return new Response(`Failed to generate image: ${e.message}`, {
-      status: 500,
-    });
+  } catch (e) {
+    // 変更後
+    if (e instanceof Error) {
+      console.error(e.message);
+      return new Response(`Failed to generate image: ${e.message}`, {
+        status: 500,
+      });
+    }
+    return new Response("Internal Server Error", { status: 500 });
   }
 }
