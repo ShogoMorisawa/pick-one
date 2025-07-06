@@ -3,10 +3,8 @@ import { createClient } from "@/lib/supabaseServer";
 
 export const runtime = "edge";
 
-export async function GET(
-  request: Request,
-  context: { params: { id: string } }
-) {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export async function GET(request: Request, context: any) {
   const { params } = context;
 
   try {
