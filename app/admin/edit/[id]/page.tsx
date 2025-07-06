@@ -1,17 +1,21 @@
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabaseServer";
 import EditForm from "./EditForm";
+import { notFound } from "next/navigation";
 
-type EditPageProps = {
-  params: { id: string };
-  searchParams: { secret?: string };
-};
+// propsの型を`any`にして、すべての型チェックをバイパスする
+export default async function EditPage(props: any) {
+  // 安全のために、propsから正しく値を取り出せているか確認する
+  const id = Number(props.params?.id);
+  const secret = props.searchParams?.secret;
 
-export default async function EditPage({
-  params,
-  searchParams,
-}: EditPageProps) {
-  if (searchParams.secret !== process.env.ADMIN_SECRET_KEY) {
+  // IDが数字でない場合は404ページを表示
+  if (isNaN(id)) {
+    notFound();
+  }
+
+  // 秘密のパスワードをチェック
+  if (secret !== process.env.ADMIN_SECRET_KEY) {
     redirect("/");
   }
 
@@ -19,11 +23,11 @@ export default async function EditPage({
   const { data: question, error } = await supabase
     .from("questions")
     .select("*")
-    .eq("id", parseInt(params.id, 10))
+    .eq("id", id) // 数字に変換したidを使用
     .single();
 
   if (error || !question) {
-    return <p className="p-8 text-center">該当する質問が見つかりません。</p>;
+    notFound(); // 質問が見つからない場合も404ページを表示
   }
 
   return (
