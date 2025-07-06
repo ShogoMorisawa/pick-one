@@ -48,6 +48,29 @@ export default function ResultView({ question }: ResultViewProps) {
     router.push("/");
   };
 
+  const handleShare = () => {
+    // localStorageから投票結果を取得
+    const savedVote = localStorage.getItem(`vote_${question.id}`);
+    const votedChoiceText =
+      savedVote === "choice_a_count"
+        ? question.choice_a_text
+        : question.choice_b_text;
+
+    // シェアするテキストを動的に作成
+    const shareText = `「${question.question_text}」の投票、\n私は「${votedChoiceText}」に投票しました！\n\n#pickone #投票アプリ \nあなたはどっち？`;
+
+    // 現在のページのURLを取得
+    const shareUrl = window.location.href;
+
+    // Twitterの投稿画面を開くURLを生成
+    const twitterIntentUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(
+      shareText
+    )}&url=${encodeURIComponent(shareUrl)}`;
+
+    // 新しいウィンドウで開く
+    window.open(twitterIntentUrl, "_blank", "width=600,height=400");
+  };
+
   const totalVotes: number = question.choice_a_count + question.choice_b_count;
   const optionAPercentage: number =
     totalVotes > 0
@@ -151,6 +174,29 @@ export default function ResultView({ question }: ResultViewProps) {
         >
           もう一度投票し直す
         </button>
+        <div className="mt-8 pt-6 border-t border-gray-200 text-center">
+          <button
+            onClick={handleShare}
+            className="inline-flex items-center gap-x-2 px-6 py-3 bg-black text-white rounded-lg font-semibold shadow-sm hover:bg-gray-800 transition-all"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <path d="M18 4H6a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2z" />
+              <path d="m7 11 2-2-2-2" />
+              <path d="M11 13h4" />
+            </svg>
+            結果をXでシェアする
+          </button>
+        </div>
       </div>
     </div>
   );

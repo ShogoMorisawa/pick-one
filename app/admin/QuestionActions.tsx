@@ -16,16 +16,14 @@ export default function QuestionActions({
   const router = useRouter();
 
   const handleDelete = async () => {
-    // ユーザーに最終確認
     const isConfirmed = window.confirm(
       "この質問を本当に削除しますか？この操作は元に戻せません。"
     );
 
     if (!isConfirmed) {
-      return; // ユーザーがキャンセルしたら何もしない
+      return;
     }
 
-    // Supabaseで該当する質問を削除
     const { error } = await supabase
       .from("questions")
       .delete()
@@ -35,7 +33,7 @@ export default function QuestionActions({
       alert(`エラーが発生しました: ${error.message}`);
     } else {
       alert("質問が削除されました。");
-      router.refresh(); // ページをリフレッシュして一覧を更新
+      router.refresh();
     }
   };
 
