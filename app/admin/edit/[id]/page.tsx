@@ -2,13 +2,15 @@ import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabaseServer";
 import EditForm from "./EditForm";
 
+type EditPageProps = {
+  params: { id: string };
+  searchParams: { secret?: string };
+};
+
 export default async function EditPage({
   params,
   searchParams,
-}: {
-  params: { id: string };
-  searchParams: { secret?: string };
-}) {
+}: EditPageProps) {
   if (searchParams.secret !== process.env.ADMIN_SECRET_KEY) {
     redirect("/");
   }
