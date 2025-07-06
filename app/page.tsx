@@ -3,15 +3,7 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabaseClient";
-
-interface Question {
-  id: string;
-  question_text: string;
-  choice_a_text: string;
-  choice_b_text: string;
-  choice_a_count: number;
-  choice_b_count: number;
-}
+import type { Question } from "@/lib/types";
 
 export default function Home() {
   const router = useRouter();
@@ -51,7 +43,7 @@ export default function Home() {
         const question = data[0];
         const savedVote = localStorage.getItem(`vote_${question.id}`);
         if (savedVote) {
-          router.push("/result");
+          router.push(`/result?id=${question.id}`);
         } else {
           setTodayQuestion(question);
         }
@@ -68,6 +60,11 @@ export default function Home() {
     setIsVoted(true);
     localStorage.setItem(`vote_${todayQuestion.id}`, option);
 
+    console.log("RPC呼び出し直前のデータ:", {
+      question_id: todayQuestion.id,
+      field_name: option,
+    });
+
     const { error } = await supabase.rpc("increment_vote", {
       question_id: todayQuestion.id,
       field_name: option,
@@ -83,7 +80,7 @@ export default function Home() {
     }
 
     setTimeout(() => {
-      router.push("/result");
+      router.push(`/result?id=${todayQuestion.id}`);
     }, 300);
   };
 
