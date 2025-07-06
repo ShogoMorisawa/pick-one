@@ -1,11 +1,14 @@
 import { ImageResponse } from "next/og";
-import { createClient } from "@/lib/supabaseServer";
+import { createClient } from "@supabase/supabase-js";
+import { notFound } from "next/navigation";
 
 export const runtime = "edge";
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export async function GET(request: Request, context: any) {
-  const { params } = context;
+export async function GET(
+  request: Request,
+  { params }: { params: { id: string } }
+) {
+  // フォントの取得
   const font400 = fetch(
     "https://fonts.gstatic.com/s/notosansjp/v60/-F62fjtqLzI2JPCgQBnw7HFowA8.otf"
   ).then((res) => res.arrayBuffer());
@@ -17,49 +20,58 @@ export async function GET(request: Request, context: any) {
   ).then((res) => res.arrayBuffer());
 
   try {
-    const supabase = await createClient();
+    const supabase = createClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+    );
+
+    const questionId = Number(params.id);
+    if (isNaN(questionId)) {
+      notFound();
+    }
 
     const { data: question } = await supabase
       .from("questions")
       .select("question_text, choice_a_text, choice_b_text")
-      .eq("id", Number(params.id))
+      .eq("id", questionId)
       .single();
 
     if (!question) {
-      return new Response("Not found", { status: 404 });
+      return new Response("Question Not found", { status: 404 });
     }
 
-    // --- ここからがデザインの変更箇所 ---
+    // フォントデータの取得を待つ
+    const fontData400 = await font400;
+    const fontData700 = await font700;
+    const fontData900 = await font900;
+
     return new ImageResponse(
       (
         <div
           style={{
+            fontFamily: '"Noto Sans JP"',
             height: "100%",
             width: "100%",
             display: "flex",
             flexDirection: "column",
             alignItems: "center",
-            justifyContent: "space-between", // 上下に配置するために変更
+            justifyContent: "space-between",
             backgroundColor: "#f8fafc",
             backgroundImage:
               "linear-gradient(135deg, #fefce8 0%, #fff7ed 100%)",
-            fontFamily: '"Noto Sans JP", sans-serif',
             padding: "60px",
           }}
         >
-          {/* ヘッダー: PICK-ONE */}
           <div
             style={{
               fontSize: "32px",
               fontWeight: 700,
               color: "#f97316",
-              letterSpacing: "0.1em", // 文字間隔
+              letterSpacing: "0.1em",
             }}
           >
             PICK-ONE
           </div>
-
-          {/* メインコンテンツ */}
           <div
             style={{
               display: "flex",
@@ -105,8 +117,6 @@ export async function GET(request: Request, context: any) {
               </div>
             </div>
           </div>
-
-          {/* フッター */}
           <div style={{ fontSize: "28px", color: "#94a3b8" }}>
             あなたならどっちを選ぶ？
           </div>
@@ -116,31 +126,15 @@ export async function GET(request: Request, context: any) {
         width: 1200,
         height: 630,
         fonts: [
-          {
-            name: "Noto Sans JP",
-            data: await font400,
-            style: "normal",
-            weight: 400,
-          },
-          {
-            name: "Noto Sans JP",
-            data: await font700,
-            style: "normal",
-            weight: 700,
-          },
-          {
-            name: "Noto Sans JP",
-            data: await font900,
-            style: "normal",
-            weight: 900,
-          },
+          { name: "Noto Sans JP", data: fontData400, weight: 400 },
+          { name: "Noto Sans JP", data: fontData700, weight: 700 },
+          { name: "Noto Sans JP", data: fontData900, weight: 900 },
         ],
       }
     );
   } catch (e) {
-    // 変更後
     if (e instanceof Error) {
-      console.error(e.message);
+      console.error(`OGP Image Error: ${e.message}`);
       return new Response(`Failed to generate image: ${e.message}`, {
         status: 500,
       });
