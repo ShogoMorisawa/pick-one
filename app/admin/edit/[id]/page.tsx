@@ -4,6 +4,7 @@ import EditForm from "./EditForm";
 import { notFound } from "next/navigation";
 
 // propsの型を`any`にして、すべての型チェックをバイパスする
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export default async function EditPage(props: any) {
   // 安全のために、propsから正しく値を取り出せているか確認する
   const id = Number(props.params?.id);
