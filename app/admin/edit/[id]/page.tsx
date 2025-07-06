@@ -6,7 +6,7 @@ export default async function EditPage({
   params,
   searchParams,
 }: {
-  params: { id: number };
+  params: { id: string };
   searchParams: { secret?: string };
 }) {
   if (searchParams.secret !== process.env.ADMIN_SECRET_KEY) {
@@ -17,7 +17,7 @@ export default async function EditPage({
   const { data: question, error } = await supabase
     .from("questions")
     .select("*")
-    .eq("id", params.id)
+    .eq("id", parseInt(params.id, 10))
     .single();
 
   if (error || !question) {
