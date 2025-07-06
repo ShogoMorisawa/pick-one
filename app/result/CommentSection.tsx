@@ -11,8 +11,9 @@ type CommentSectionProps = {
 
 export default function CommentSection({ questionId }: CommentSectionProps) {
   const [comments, setComments] = useState<Comment[]>([]);
-  const [newComment, setNewComment] = useState("");
-  const [isCommentsLoading, setIsCommentsLoading] = useState(true);
+  const [newComment, setNewComment] = useState<string>("");
+  const [isCommentsLoading, setIsCommentsLoading] = useState<boolean>(true);
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
   // コメントを取得する
   useEffect(() => {
@@ -41,6 +42,8 @@ export default function CommentSection({ questionId }: CommentSectionProps) {
     e.preventDefault();
     if (!newComment.trim()) return;
 
+    setIsSubmitting(true);
+
     const { data, error } = await supabase
       .from("comments")
       .insert({ comment_text: newComment, question_id: questionId })
@@ -54,6 +57,8 @@ export default function CommentSection({ questionId }: CommentSectionProps) {
       setComments([data, ...comments]);
       setNewComment("");
     }
+
+    setIsSubmitting(false);
   };
 
   return (
@@ -95,9 +100,9 @@ export default function CommentSection({ questionId }: CommentSectionProps) {
             <button
               type="submit"
               className="bg-orange-400 text-white font-semibold px-4 py-1.5 rounded-md hover:bg-orange-500 transition text-sm disabled:bg-gray-300"
-              disabled={!newComment.trim()}
+              disabled={!newComment.trim() || isSubmitting}
             >
-              投稿する
+              {isSubmitting ? "投稿中..." : "投稿する"}
             </button>
           </div>
         </form>
