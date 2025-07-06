@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabaseClient";
 import { Pie } from "react-chartjs-2";
@@ -23,12 +23,12 @@ type ResultViewProps = {
 
 export default function ResultView({ question }: ResultViewProps) {
   const router = useRouter();
-  const [vote] = useState<string | null>(() => {
-    if (typeof window !== "undefined") {
-      return localStorage.getItem(`vote_${question.id}`);
-    }
-    return null;
-  });
+  const [vote, setVote] = useState<string | null>(null);
+
+  useEffect(() => {
+    const savedVote = localStorage.getItem(`vote_${question.id}`);
+    setVote(savedVote);
+  }, [question.id]);
 
   const handleResetVote = async () => {
     if (!vote) return;
