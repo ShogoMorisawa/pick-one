@@ -5,15 +5,17 @@ export const runtime = "edge";
 
 export async function GET(
   request: Request,
-  { params }: { params: { id: string } }
+  context: { params: { id: string } }
 ) {
+  const { params } = context;
+
   try {
     const supabase = await createClient();
 
     const { data: question } = await supabase
       .from("questions")
       .select("question_text, choice_a_text, choice_b_text")
-      .eq("id", params.id)
+      .eq("id", Number(params.id))
       .single();
 
     if (!question) {
