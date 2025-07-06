@@ -19,7 +19,7 @@ export default async function AdminPage({ searchParams }: AdminPageProps) {
   }
 
   // 2. Supabaseから全質問を取得
-  const supabase = createClient();
+  const supabase = await createClient();
   const { data: questions, error } = await supabase
     .from("questions")
     .select("*")

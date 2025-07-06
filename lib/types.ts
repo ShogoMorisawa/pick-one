@@ -5,6 +5,7 @@ export interface Question {
   choice_b_text: string;
   choice_a_count: number;
   choice_b_count: number;
+  publish_at: string;
 }
 
 export interface Comment {

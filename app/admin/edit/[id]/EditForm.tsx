@@ -13,6 +13,11 @@ export default function EditForm({ question }: EditFormProps) {
   const [questionText, setQuestionText] = useState(question.question_text);
   const [choiceA, setChoiceA] = useState(question.choice_a_text);
   const [choiceB, setChoiceB] = useState(question.choice_b_text);
+  const [publishAt, setPublishAt] = useState(
+    question.publish_at
+      ? new Date(question.publish_at).toISOString().slice(0, 16)
+      : ""
+  );
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [message, setMessage] = useState("");
@@ -28,6 +33,7 @@ export default function EditForm({ question }: EditFormProps) {
         question_text: questionText,
         choice_a_text: choiceA,
         choice_b_text: choiceB,
+        publish_at: publishAt || new Date().toISOString(),
       })
       .eq("id", question.id);
 
@@ -85,6 +91,24 @@ export default function EditForm({ question }: EditFormProps) {
           onChange={(e) => setChoiceB(e.target.value)}
           className="mt-1 block w-full border-gray-300 rounded-md shadow-sm"
         />
+      </div>
+      <div>
+        <label
+          htmlFor="publishAt"
+          className="block text-sm font-medium text-gray-700"
+        >
+          公開日時（任意）
+        </label>
+        <input
+          type="datetime-local"
+          id="publishAt"
+          value={publishAt}
+          onChange={(e) => setPublishAt(e.target.value)}
+          className="mt-1 block w-full border-gray-300 rounded-md shadow-sm"
+        />
+        <p className="text-xs text-gray-500 mt-1">
+          ※空欄のままだと、更新時に即時公開されます。
+        </p>
       </div>
       <div className="flex items-center justify-between">
         <button

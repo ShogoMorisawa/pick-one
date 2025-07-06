@@ -21,7 +21,7 @@ export async function generateMetadata({
   // サイトのURLを環境変数から取得（後で設定）
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
 
-  const supabase = createClient();
+  const supabase = await createClient();
   const { data: question } = await supabase
     .from("questions")
     .select("question_text")
@@ -64,7 +64,7 @@ export default async function ResultPage({ searchParams }: ResultPageProps) {
     redirect("/");
   }
 
-  const supabase = createClient();
+  const supabase = await createClient();
   const { data: question, error } = await supabase
     .from("questions")
     .select("*")
