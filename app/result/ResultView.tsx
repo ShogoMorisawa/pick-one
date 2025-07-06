@@ -1,7 +1,8 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { supabase } from "@/lib/supabaseClient";
 import { Pie } from "react-chartjs-2";
 import {
   Chart as ChartJS,
@@ -12,57 +13,25 @@ import {
   ChartOptions,
   ChartDataCustomTypesPerDataset,
 } from "chart.js";
-import { supabase } from "@/lib/supabaseClient";
 import type { Question } from "@/lib/types";
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
-export const dynamic = "force-dynamic";
+type ResultViewProps = {
+  question: Question;
+};
 
-export default function ResultView() {
+export default function ResultView({ question }: ResultViewProps) {
   const router = useRouter();
-  const searchParams = useSearchParams();
-  const [question, setQuestion] = useState<Question | null>(null);
-  const [vote, setVote] = useState<string | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
-
-  useEffect(() => {
-    const questionId = searchParams.get("id");
-    if (!questionId) {
-      router.push("/");
-      return;
+  const [vote] = useState<string | null>(() => {
+    if (typeof window !== "undefined") {
+      return localStorage.getItem(`vote_${question.id}`);
     }
-
-    const savedVote = localStorage.getItem(`vote_${questionId}`);
-    if (!savedVote) {
-      router.push("/");
-      return;
-    }
-    setVote(savedVote);
-
-    const fetchQuestion = async () => {
-      setIsLoading(true);
-      const { data, error } = await supabase
-        .from("questions")
-        .select("*")
-        .eq("id", questionId)
-        .single();
-
-      if (error || !data) {
-        console.error("Error fetching question:", error);
-        router.push("/");
-        return;
-      }
-
-      setQuestion(data);
-      setIsLoading(false);
-    };
-
-    fetchQuestion();
-  }, [searchParams, router]);
+    return null;
+  });
 
   const handleResetVote = async () => {
-    if (!question || !vote) return;
+    if (!vote) return;
 
     const { error } = await supabase.rpc("decrement_vote", {
       question_id: question.id,
@@ -70,7 +39,7 @@ export default function ResultView() {
     });
 
     if (error) {
-      console.error("Error incrementing vote:", error);
+      console.error("Error decrementing vote:", error);
       alert("エラーが発生しました。もう一度お試しください。");
       return;
     }
@@ -78,14 +47,6 @@ export default function ResultView() {
     localStorage.removeItem(`vote_${question.id}`);
     router.push("/");
   };
-
-  if (isLoading || !question) {
-    return (
-      <div className="text-center text-gray-600">
-        <h2 className="text-xl font-semibold">結果を読み込んでいます...</h2>
-      </div>
-    );
-  }
 
   const totalVotes: number = question.choice_a_count + question.choice_b_count;
   const optionAPercentage: number =
@@ -126,6 +87,21 @@ export default function ResultView() {
 
   const yourVoteText =
     vote === "choice_a_count" ? question.choice_a_text : question.choice_b_text;
+
+  if (!vote) {
+    return (
+      <div className="text-center text-gray-600 p-8">
+        <h2 className="text-xl font-semibold">投票情報が見つかりません</h2>
+        <p className="mt-2">トップページからもう一度お試しください。</p>
+        <button
+          onClick={() => router.push("/")}
+          className="mt-4 bg-orange-400 text-white px-6 py-2 rounded-lg font-semibold shadow-sm hover:bg-orange-500 transition-all"
+        >
+          ホームに戻る
+        </button>
+      </div>
+    );
+  }
 
   return (
     <div className="w-full max-w-lg mx-auto flex flex-col items-center">
@@ -176,45 +152,6 @@ export default function ResultView() {
           もう一度投票し直す
         </button>
       </div>
-      <div className="w-full max-w-lg mx-auto px-4 pb-8">
-        <h3 className="text-lg font-semibold text-gray-800 mb-4 mt-10">
-          みんなのコメント
-        </h3>
-
-        <ul className="space-y-3 text-sm text-gray-700">
-          <li className="bg-white border border-orange-100 rounded-lg p-4 shadow-sm">
-            🍞 パン派！手軽で片手で食べられるから忙しい朝に助かってる。
-          </li>
-          <li className="bg-white border border-orange-100 rounded-lg p-4 shadow-sm">
-            🍙 ごはん派。味噌汁とセットで食べたい気分になります。
-          </li>
-          <li className="bg-orange-50 border border-dashed border-orange-200 rounded-lg p-4 text-gray-500 italic text-center">
-            ※ここにみんなのコメントが表示されます。
-          </li>
-        </ul>
-      </div>
-
-      {/* コメント投稿フォーム */}
-      <form
-        // onSubmit={handleCommentSubmit}
-        className="mt-8 w-full max-w-lg mx-auto px-4"
-      >
-        <textarea
-          className="w-full border border-orange-200 rounded-md p-3 text-sm focus:outline-none focus:ring-2 focus:ring-orange-300 resize-none"
-          rows={3}
-          placeholder="あなたのコメントを入力してください"
-          // value={comment}
-          // onChange={(e) => setComment(e.target.value)}
-        />
-        <div className="mt-3 text-right">
-          <button
-            type="submit"
-            className="bg-orange-400 text-white font-semibold px-5 py-2 rounded-md hover:bg-orange-500 transition"
-          >
-            コメントを送る
-          </button>
-        </div>
-      </form>
     </div>
   );
 }

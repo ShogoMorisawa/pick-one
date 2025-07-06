@@ -11,5 +11,5 @@ export interface Comment {
   id: number;
   comment_text: string;
   created_at: string;
-  question_id: string;
+  question_id: number;
 }
