@@ -6,7 +6,7 @@ export default async function EditPage({
   params,
   searchParams,
 }: {
-  params: { id: string };
+  params: { id: number };
   searchParams: { secret?: string };
 }) {
   if (searchParams.secret !== process.env.ADMIN_SECRET_KEY) {
