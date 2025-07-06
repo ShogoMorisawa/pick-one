@@ -3,22 +3,19 @@ import ResultView from "./ResultView";
 import CommentSection from "./CommentSection";
 import { createClient } from "@/lib/supabaseServer";
 import { redirect } from "next/navigation";
-import type { Metadata } from "next"; // Metadata型をインポート
+import type { Metadata } from "next";
+import { notFound } from "next/navigation";
 
-type ResultPageProps = {
-  searchParams: { id?: string };
-};
-
-// ↓ この関数がメタデータを生成する要！
 export async function generateMetadata({
   searchParams,
-}: ResultPageProps): Promise<Metadata> {
+}: {
+  searchParams: { id?: string };
+}): Promise<Metadata> {
   const questionId = searchParams.id;
   if (!questionId) {
     return { title: "結果" };
   }
 
-  // サイトのURLを環境変数から取得（後で設定）
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
 
   const supabase = await createClient();
@@ -30,7 +27,6 @@ export async function generateMetadata({
 
   const title = question ? `「${question.question_text}」の結果` : "結果";
   const description = "みんなはどっちに投票した？結果を見てみよう！";
-  // OGP画像のURLは、必ずサイトのドメインから始まる絶対パスにする
   const ogImage = `${siteUrl}/og/${questionId}`;
 
   return {
@@ -57,10 +53,12 @@ export async function generateMetadata({
   };
 }
 
-export default async function ResultPage({ searchParams }: ResultPageProps) {
-  const questionId = searchParams.id;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export default async function ResultPage(props: any) {
+  const { searchParams } = props;
+  const questionId = Number(searchParams?.id);
 
-  if (!questionId) {
+  if (isNaN(questionId)) {
     redirect("/");
   }
 
@@ -72,7 +70,7 @@ export default async function ResultPage({ searchParams }: ResultPageProps) {
     .single();
 
   if (error || !question) {
-    redirect("/");
+    notFound();
   }
 
   return (

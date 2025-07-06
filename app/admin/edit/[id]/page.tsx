@@ -3,12 +3,10 @@ import { createClient } from "@/lib/supabaseServer";
 import EditForm from "./EditForm";
 import { notFound } from "next/navigation";
 
-// propsの型を`any`にして、すべての型チェックをバイパスする
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export default async function EditPage(props: any) {
-  // 安全のために、propsから正しく値を取り出せているか確認する
-  const id = Number(props.params?.id);
-  const secret = props.searchParams?.secret;
+  const { params, searchParams } = props;
+  const id = Number(params?.id);
 
   // IDが数字でない場合は404ページを表示
   if (isNaN(id)) {
@@ -16,7 +14,7 @@ export default async function EditPage(props: any) {
   }
 
   // 秘密のパスワードをチェック
-  if (secret !== process.env.ADMIN_SECRET_KEY) {
+  if (searchParams.secret !== process.env.ADMIN_SECRET_KEY) {
     redirect("/");
   }
 

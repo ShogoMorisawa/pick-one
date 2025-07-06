@@ -4,13 +4,10 @@ import type { Question } from "@/lib/types";
 import CreateQuestionForm from "./CreateQuestionForm";
 import QuestionActions from "./QuestionActions";
 
-type AdminPageProps = {
-  searchParams: {
-    secret?: string;
-  };
-};
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export default async function AdminPage(props: any) {
+  const { searchParams } = props;
 
-export default async function AdminPage({ searchParams }: AdminPageProps) {
   // 1. 秘密のパスワードをチェック
   const secretKey = process.env.ADMIN_SECRET_KEY;
   if (searchParams.secret !== secretKey) {
