@@ -4,11 +4,10 @@ import { notFound } from "next/navigation";
 
 export const runtime = "edge";
 
-export async function GET(
-  request: Request,
-  { params }: { params: { id: string } }
-) {
-  // フォントの取得
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export async function GET(request: Request, context: any) {
+  const { params } = context;
+
   const font400 = fetch(
     "https://fonts.gstatic.com/s/notosansjp/v60/-F62fjtqLzI2JPCgQBnw7HFowA8.otf"
   ).then((res) => res.arrayBuffer());
@@ -40,7 +39,6 @@ export async function GET(
       return new Response("Question Not found", { status: 404 });
     }
 
-    // フォントデータの取得を待つ
     const fontData400 = await font400;
     const fontData700 = await font700;
     const fontData900 = await font900;
@@ -126,9 +124,24 @@ export async function GET(
         width: 1200,
         height: 630,
         fonts: [
-          { name: "Noto Sans JP", data: fontData400, weight: 400 },
-          { name: "Noto Sans JP", data: fontData700, weight: 700 },
-          { name: "Noto Sans JP", data: fontData900, weight: 900 },
+          {
+            name: "Noto Sans JP",
+            data: fontData400,
+            weight: 400,
+            style: "normal",
+          },
+          {
+            name: "Noto Sans JP",
+            data: fontData700,
+            weight: 700,
+            style: "normal",
+          },
+          {
+            name: "Noto Sans JP",
+            data: fontData900,
+            weight: 900,
+            style: "normal",
+          },
         ],
       }
     );
