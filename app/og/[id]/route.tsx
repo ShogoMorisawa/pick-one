@@ -6,6 +6,18 @@ export const runtime = "edge";
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export async function GET(request: Request, context: any) {
   const { params } = context;
+  const font700 = fetch(
+    new URL(
+      "https://fonts.gstatic.com/s/notosansjp/v60/-F6pfjtqLzI2JPCgQBnw7HFyzsd-A4Q2doCvI60.otf",
+      import.meta.url
+    )
+  ).then((res) => res.arrayBuffer());
+  const font900 = fetch(
+    new URL(
+      "https://fonts.gstatic.com/s/notosansjp/v60/-F6pfjtqLzI2JPCgQBnw7HFyztt9A4Q2doCvI60.otf",
+      import.meta.url
+    )
+  ).then((res) => res.arrayBuffer());
 
   try {
     const supabase = await createClient();
@@ -106,6 +118,20 @@ export async function GET(request: Request, context: any) {
       {
         width: 1200,
         height: 630,
+        fonts: [
+          {
+            name: "Noto Sans JP",
+            data: await font700,
+            style: "normal",
+            weight: 700,
+          },
+          {
+            name: "Noto Sans JP",
+            data: await font900,
+            style: "normal",
+            weight: 900,
+          },
+        ],
       }
     );
   } catch (e) {
