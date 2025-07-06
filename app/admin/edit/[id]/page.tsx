@@ -1,23 +1,19 @@
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabaseServer";
-import EditForm from "./EditForm"; // ← 次に作成するフォームコンポーネント
-
-type EditPageProps = {
-  params: { id: string };
-  searchParams: { secret?: string };
-};
+import EditForm from "./EditForm";
 
 export default async function EditPage({
   params,
   searchParams,
-}: EditPageProps) {
-  // 秘密のパスワードをチェック
+}: {
+  params: { id: string };
+  searchParams: { secret?: string };
+}) {
   if (searchParams.secret !== process.env.ADMIN_SECRET_KEY) {
     redirect("/");
   }
 
-  // 編集対象の質問データを取得
-  const supabase = createClient();
+  const supabase = await createClient();
   const { data: question, error } = await supabase
     .from("questions")
     .select("*")
