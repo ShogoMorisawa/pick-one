@@ -7,22 +7,13 @@ export const runtime = "edge";
 export async function GET(request: Request, context: any) {
   const { params } = context;
   const font400 = fetch(
-    new URL(
-      "https://fonts.gstatic.com/s/notosansjp/v60/-F62fjtqLzI2JPCgQBnw7HFowA8.otf",
-      import.meta.url
-    )
+    "https://fonts.gstatic.com/s/notosansjp/v60/-F62fjtqLzI2JPCgQBnw7HFowA8.otf"
   ).then((res) => res.arrayBuffer());
   const font700 = fetch(
-    new URL(
-      "https://fonts.gstatic.com/s/notosansjp/v60/-F6pfjtqLzI2JPCgQBnw7HFyzsd-A4Q2doCvI60.otf",
-      import.meta.url
-    )
+    "https://fonts.gstatic.com/s/notosansjp/v60/-F6pfjtqLzI2JPCgQBnw7HFyzsd-A4Q2doCvI60.otf"
   ).then((res) => res.arrayBuffer());
   const font900 = fetch(
-    new URL(
-      "https://fonts.gstatic.com/s/notosansjp/v60/-F6pfjtqLzI2JPCgQBnw7HFyztt9A4Q2doCvI60.otf",
-      import.meta.url
-    )
+    "https://fonts.gstatic.com/s/notosansjp/v60/-F6pfjtqLzI2JPCgQBnw7HFyztt9A4Q2doCvI60.otf"
   ).then((res) => res.arrayBuffer());
 
   try {
