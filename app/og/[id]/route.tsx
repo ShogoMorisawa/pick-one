@@ -5,10 +5,8 @@ import { notFound } from "next/navigation";
 export const runtime = "edge";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export async function GET(
-  request: Request,
-  { params }: { params: { id: string } }
-) {
+export async function GET(request: Request, context: any) {
+  const { params } = context;
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL!;
 
   const fontRegular = fetch(
