@@ -5,31 +5,27 @@ import { notFound } from "next/navigation";
 export const runtime = "edge";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export async function GET(request: Request, context: any) {
-  const { params } = context;
+export async function GET(
+  request: Request,
+  { params }: { params: { id: string } }
+) {
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL!;
 
-  const font400 = fetch(
-    "https://fonts.gstatic.com/s/notosansjp/v60/-F62fjtqLzI2JPCgQBnw7HFowA8.otf"
+  const fontRegular = fetch(
+    new URL(`${siteUrl}/fonts/NotoSansJP-Regular.otf`)
   ).then((res) => res.arrayBuffer());
-  const font700 = fetch(
-    "https://fonts.gstatic.com/s/notosansjp/v60/-F6pfjtqLzI2JPCgQBnw7HFyzsd-A4Q2doCvI60.otf"
-  ).then((res) => res.arrayBuffer());
-  const font900 = fetch(
-    "https://fonts.gstatic.com/s/notosansjp/v60/-F6pfjtqLzI2JPCgQBnw7HFyztt9A4Q2doCvI60.otf"
+  const fontBold = fetch(new URL(`${siteUrl}/fonts/NotoSansJP-Bold.otf`)).then(
+    (res) => res.arrayBuffer()
+  );
+  const fontBlack = fetch(
+    new URL(`${siteUrl}/fonts/NotoSansJP-Black.otf`)
   ).then((res) => res.arrayBuffer());
 
   try {
-    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-    const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
-
-    if (!supabaseUrl || !supabaseAnonKey) {
-      console.error("Supabase environment variables are not set");
-      return new Response("Supabase environment variables are not set", {
-        status: 500,
-      });
-    }
-
-    const supabase = createClient(supabaseUrl, supabaseAnonKey);
+    const supabase = createClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+    );
 
     const questionId = Number(params.id);
     if (isNaN(questionId)) {
@@ -46,13 +42,11 @@ export async function GET(request: Request, context: any) {
       return new Response("Question Not found", { status: 404 });
     }
 
-    console.log("Fetched question data:", JSON.stringify(question));
-
-    const fontData400 = await font400;
-    const fontData700 = await font700;
-    const fontData900 = await font900;
-
-    console.log("Font data loaded successfully.");
+    const [fontDataRegular, fontDataBold, fontDataBlack] = await Promise.all([
+      fontRegular,
+      fontBold,
+      fontBlack,
+    ]);
 
     return new ImageResponse(
       (
@@ -137,19 +131,19 @@ export async function GET(request: Request, context: any) {
         fonts: [
           {
             name: "Noto Sans JP",
-            data: fontData400,
+            data: fontDataRegular,
             weight: 400,
             style: "normal",
           },
           {
             name: "Noto Sans JP",
-            data: fontData700,
+            data: fontDataBold,
             weight: 700,
             style: "normal",
           },
           {
             name: "Noto Sans JP",
-            data: fontData900,
+            data: fontDataBlack,
             weight: 900,
             style: "normal",
           },
@@ -159,12 +153,10 @@ export async function GET(request: Request, context: any) {
   } catch (e) {
     if (e instanceof Error) {
       console.error(`OGP Image Error: ${e.message}`);
-      console.error(e.stack);
       return new Response(`Failed to generate image: ${e.message}`, {
         status: 500,
       });
     }
-    console.error("An unexpected error occurred in OGP generation:", e);
     return new Response("Internal Server Error", { status: 500 });
   }
 }
