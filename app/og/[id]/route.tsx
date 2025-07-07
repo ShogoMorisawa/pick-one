@@ -19,10 +19,17 @@ export async function GET(request: Request, context: any) {
   ).then((res) => res.arrayBuffer());
 
   try {
-    const supabase = createClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-    );
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+    const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+
+    if (!supabaseUrl || !supabaseAnonKey) {
+      console.error("Supabase environment variables are not set");
+      return new Response("Supabase environment variables are not set", {
+        status: 500,
+      });
+    }
+
+    const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
     const questionId = Number(params.id);
     if (isNaN(questionId)) {
