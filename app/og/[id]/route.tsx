@@ -46,9 +46,13 @@ export async function GET(request: Request, context: any) {
       return new Response("Question Not found", { status: 404 });
     }
 
+    console.log("Fetched question data:", JSON.stringify(question));
+
     const fontData400 = await font400;
     const fontData700 = await font700;
     const fontData900 = await font900;
+
+    console.log("Font data loaded successfully.");
 
     return new ImageResponse(
       (
@@ -155,10 +159,12 @@ export async function GET(request: Request, context: any) {
   } catch (e) {
     if (e instanceof Error) {
       console.error(`OGP Image Error: ${e.message}`);
+      console.error(e.stack);
       return new Response(`Failed to generate image: ${e.message}`, {
         status: 500,
       });
     }
+    console.error("An unexpected error occurred in OGP generation:", e);
     return new Response("Internal Server Error", { status: 500 });
   }
 }
