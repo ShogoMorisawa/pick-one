@@ -1,8 +1,5 @@
 import { ImageResponse } from "next/og";
 
-// このルートはEdge Runtimeで動作します
-export const runtime = "edge";
-
 // 画像のサイズを設定
 export const size = {
   width: 1200,
