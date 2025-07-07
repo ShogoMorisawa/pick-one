@@ -12,11 +12,6 @@ export async function GET(request: Request) {
   const choiceA = searchParams.get("choiceA");
   const choiceB = searchParams.get("choiceB");
 
-  // もしテキストがなければ、エラーを返す
-  if (!questionText || !choiceA || !choiceB) {
-    return new Response("Missing required search parameters", { status: 400 });
-  }
-
   // ローカルフォントの読み込み
   const fontRegular = fetch(
     new URL(`${siteUrl}/fonts/NotoSansJP-Regular.otf`)
@@ -32,6 +27,69 @@ export async function GET(request: Request) {
     fontBold,
     fontBlack,
   ]);
+
+  // もしテキストがなければ、デフォルトのOGP画像を返す
+  if (!questionText || !choiceA || !choiceB) {
+    return new ImageResponse(
+      (
+        <div
+          style={{
+            fontFamily: '"Noto Sans JP"',
+            height: "100%",
+            width: "100%",
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+            backgroundColor: "#f8fafc",
+            backgroundImage:
+              "linear-gradient(135deg, #fefce8 0%, #fff7ed 100%)",
+            padding: "60px",
+          }}
+        >
+          <div
+            style={{
+              fontSize: "72px",
+              fontWeight: 700,
+              color: "#f97316",
+              letterSpacing: "0.1em",
+            }}
+          >
+            PICK-ONE
+          </div>
+          <div
+            style={{ marginTop: "20px", fontSize: "28px", color: "#94a3b8" }}
+          >
+            究極の2択で盛り上がろう
+          </div>
+        </div>
+      ),
+      {
+        width: 1200,
+        height: 630,
+        fonts: [
+          {
+            name: "Noto Sans JP",
+            data: fontDataRegular,
+            weight: 400,
+            style: "normal",
+          },
+          {
+            name: "Noto Sans JP",
+            data: fontDataBold,
+            weight: 700,
+            style: "normal",
+          },
+          {
+            name: "Noto Sans JP",
+            data: fontDataBlack,
+            weight: 900,
+            style: "normal",
+          },
+        ],
+      }
+    );
+  }
 
   return new ImageResponse(
     (

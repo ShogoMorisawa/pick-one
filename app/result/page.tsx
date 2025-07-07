@@ -5,11 +5,9 @@ import { createClient } from "@/lib/supabaseServer";
 import { redirect, notFound } from "next/navigation";
 import type { Metadata } from "next";
 
-export async function generateMetadata({
-  searchParams,
-}: {
-  searchParams: { [key: string]: string | string[] | undefined };
-}): Promise<Metadata> {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export async function generateMetadata(props: any): Promise<Metadata> {
+  const { searchParams } = props;
   const questionId = Number(searchParams?.id);
 
   if (isNaN(questionId)) {
@@ -28,7 +26,7 @@ export async function generateMetadata({
   const title = question ? `「${question.question_text}」の結果` : "結果";
   const description = "みんなはどっちに投票した？結果を見てみよう！";
 
-  let ogImage = `${siteUrl}/og-test`;
+  let ogImage = `${siteUrl}/og`;
   if (question) {
     const params = new URLSearchParams();
     params.set("questionText", question.question_text);
