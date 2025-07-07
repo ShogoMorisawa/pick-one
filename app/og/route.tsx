@@ -1,7 +1,5 @@
 import { ImageResponse } from "next/og";
 
-export const runtime = "edge";
-
 export async function GET(request: Request) {
   // サイトのURLを取得 (フォントの読み込みに使う)
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL!;
