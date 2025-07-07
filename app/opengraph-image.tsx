@@ -42,7 +42,6 @@ export default function Image() {
         </div>
       </div>
     ),
-    // `size`オプションは上で定義したので不要
     {
       ...size,
     }
