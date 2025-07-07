@@ -10,9 +10,39 @@ const notoSansJP = Noto_Sans_JP({
   variable: "--font-noto-sans-jp",
 });
 
+const siteName = "PICK-ONE";
+const description =
+  "究極の2択で盛り上がろう！投票を通じて「違い」を楽しむ思想的な投票アプリ";
+const url =
+  process.env.NEXT_PUBLIC_SITE_URL || "https://pick-one-sigma.vercel.app";
+
 export const metadata: Metadata = {
-  title: "どっち派？",
-  description: "投票を通じて“違い”を楽しむ思想的な投票アプリ",
+  title: {
+    default: siteName,
+    template: `%s | ${siteName}`,
+  },
+  description,
+  metadataBase: new URL(url),
+  openGraph: {
+    title: siteName,
+    description,
+    url,
+    siteName,
+    images: [
+      {
+        width: 1200,
+        height: 630,
+        url: "/opengraph-image",
+      },
+    ],
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: siteName,
+    description,
+    images: ["/opengraph-image"],
+  },
 };
 
 export default function RootLayout({
