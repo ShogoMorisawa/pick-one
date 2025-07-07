@@ -7,17 +7,17 @@ export const runtime = "edge";
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export async function GET(request: Request, context: any) {
   const { params } = context;
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL!;
+  // const siteUrl = process.env.NEXT_PUBLIC_SITE_URL!;
 
-  const fontRegular = fetch(
-    new URL(`${siteUrl}/fonts/NotoSansJP-Regular.otf`)
-  ).then((res) => res.arrayBuffer());
-  const fontBold = fetch(new URL(`${siteUrl}/fonts/NotoSansJP-Bold.otf`)).then(
-    (res) => res.arrayBuffer()
-  );
-  const fontBlack = fetch(
-    new URL(`${siteUrl}/fonts/NotoSansJP-Black.otf`)
-  ).then((res) => res.arrayBuffer());
+  // const fontRegular = fetch(
+  //   new URL(`${siteUrl}/fonts/NotoSansJP-Regular.otf`)
+  // ).then((res) => res.arrayBuffer());
+  // const fontBold = fetch(
+  //   new URL(`${siteUrl}/fonts/NotoSansJP-Bold.otf`)
+  // ).then((res) => res.arrayBuffer());
+  // const fontBlack = fetch(
+  //   new URL(`${siteUrl}/fonts/NotoSansJP-Black.otf`)
+  // ).then((res) => res.arrayBuffer());
 
   try {
     const supabase = createClient(
@@ -40,11 +40,11 @@ export async function GET(request: Request, context: any) {
       return new Response("Question Not found", { status: 404 });
     }
 
-    const [fontDataRegular, fontDataBold, fontDataBlack] = await Promise.all([
-      fontRegular,
-      fontBold,
-      fontBlack,
-    ]);
+    // const [fontDataRegular, fontDataBold, fontDataBlack] = await Promise.all([
+    //   fontRegular,
+    //   fontBold,
+    //   fontBlack,
+    // ]);
 
     return new ImageResponse(
       (
@@ -126,26 +126,26 @@ export async function GET(request: Request, context: any) {
       {
         width: 1200,
         height: 630,
-        fonts: [
-          {
-            name: "Noto Sans JP",
-            data: fontDataRegular,
-            weight: 400,
-            style: "normal",
-          },
-          {
-            name: "Noto Sans JP",
-            data: fontDataBold,
-            weight: 700,
-            style: "normal",
-          },
-          {
-            name: "Noto Sans JP",
-            data: fontDataBlack,
-            weight: 900,
-            style: "normal",
-          },
-        ],
+        // fonts: [
+        //   {
+        //     name: "Noto Sans JP",
+        //     data: fontDataRegular,
+        //     weight: 400,
+        //     style: "normal",
+        //   },
+        //   {
+        //     name: "Noto Sans JP",
+        //     data: fontDataBold,
+        //     weight: 700,
+        //     style: "normal",
+        //   },
+        //   {
+        //     name: "Noto Sans JP",
+        //     data: fontDataBlack,
+        //     weight: 900,
+        //     style: "normal",
+        //   },
+        // ],
       }
     );
   } catch (e) {
