@@ -1,4 +1,4 @@
-# どっち派？ (Which Prefer)
+# どっち派？ (pick-one)
 
 > 🗳️ 投票を通じて“違い”を楽しむ、思想的な投票アプリ
 
@@ -23,43 +23,57 @@
 
 ## 🚀 主な機能
 
-- ✅ **日替わりの2択投票**  
-  毎日新しい問いに出会えます。
+- ✅ **日替わり・予約投稿可能な投票** 管理画面から未来の日付を指定して、質問の公開を予約できます。
 
-- ✅ **リアルタイムな結果表示**  
-  投票後すぐに、円グラフで“みんな”の選択が視覚化されます。
+- ✅ **リアルタイムな結果表示** 投票後すぐに、円グラフで“みんな”の選択が視覚化されます。
 
-- ✅ **投票履歴の保持（localStorage）**  
-  同じ質問に複数回投票できないよう制御しています。
+- ✅ **匿名コメント機能** Supabaseをバックエンドに、各質問へのコメント投稿・表示機能を完全に実装。
 
-- ✅ **コメント機能（UIのみ）**  
-  「なぜそれを選んだのか？」という対話のきっかけとなるコメント欄を表示。  
-  投稿機能は今後のアップデートで追加予定です。
+- ✅ **管理者専用ダッシュボード** パスワードで保護された管理画面から、質問の作成・編集・削除・公開予約（CRUD）が可能です。
+
+- ✅ **SNSシェア対応** Twitter(X)などでシェアした際に、サイトの顔となるOGP画像が美しく表示されます。
 
 ---
 
 ## 🛠️ 技術スタック
 
-| カテゴリ         | 使用技術                                                                                                                              |
-| :--------------- | :------------------------------------------------------------------------------------------------------------------------------------ |
-| **フロントエンド** | ![Next.js](https://img.shields.io/badge/Next.js-000000?style=for-the-badge&logo=next.js&logoColor=white) ![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=for-the-badge&logo=typescript&logoColor=white) ![React](https://img.shields.io/badge/React-61DAFB?style=for-the-badge&logo=react&logoColor=black) |
-| **スタイリング** | ![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-06B6D4?style=for-the-badge&logo=tailwindcss&logoColor=white)                   |
-| **状態管理** | `useState`, `useEffect`, `localStorage`                                                                                               |
-| **グラフ描画** | `Chart.js`, `react-chartjs-2`                                                                                                         |
-| **デプロイ** | ![Vercel](https://img.shields.io/badge/Vercel-000000?style=for-the-badge&logo=vercel&logoColor=white)                                     |
+| カテゴリ | 使用技術 |
+| :--- | :--- |
+| **バックエンド** | ![Supabase](https://img.shields.io/badge/Supabase-3FCF8E?style=for-the-badge&logo=supabase&logoColor=white) (PostgreSQL, RLS) |
+| **フロントエンド** | ![Next.js](https://img.shields.io/badge/Next.js-000000?style=for-the-badge&logo=next.js&logoColor=white) (App Router, Server Components) ![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=for-the-badge&logo=typescript&logoColor=white) ![React](https://img.shields.io/badge/React-61DAFB?style=for-the-badge&logo=react&logoColor=black) |
+| **スタイリング** | ![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-06B6D4?style=for-the-badge&logo=tailwindcss&logoColor=white) |
+| **グラフ描画** | `Chart.js`, `react-chartjs-2` |
+| **デプロイ** | ![Vercel](https://img.shields.io/badge/Vercel-000000?style=for-the-badge&logo=vercel&logoColor=white) (Serverless Functions) |
 
 ---
 
-## 🧪 現在のステータス
+## 💡 開発の道のりと学び
 
-このアプリは現在、**MVP（最小実用機能）まで完成した段階**です。  
-「投票 → 結果 → コメントを読む」までの一連の体験はすでに提供されています。  
-今後、以下の機能を追加しながら、より深く・広く“違いを楽しむ場”を育てていきます。
+このプロジェクトは、シンプルなMVPから始まり、数々の技術的挑戦を経て現在の形に至りました。
+
+特に、Next.js App Routerのモダンなアーキテクチャ（サーバーコンポーネントによるデータ取得など）へのリファクタリングは、パフォーマンスと保守性を大きく向上させました。
+
+また、VercelのEdge Runtimeにおける`ImageResponse`を用いた動的OGP画像生成では、原因不明のビルドエラーとの長い戦いを経験しました。フォントの扱い、クライアントの初期化、型定義、ビルドキャッシュ、実行環境の差異など、あらゆる可能性を試した末、最終的には**安定性を最優先し、静的なOGP画像に切り替える**という、プロダクト開発における現実的で重要な意思決定を行いました。この経験は、単なる技術力以上に、プロジェクトを完成に導く上での大きな学びとなっています。
 
 ---
 
-## 🔮 今後の実装予定
+## ✅ 現在のステータス
 
-- [ ] **コメント投稿の保存機能**（localStorageまたはSupabase）
-- [ ] **投票結果の集計**
-- [ ] **管理画面による質問予約投稿**
+当初のMVP構想をすべて達成し、**一つの完成されたWebサービスとして安定稼働している段階**です。
+
+投票、結果確認、コメント投稿、SNSシェア、そしてそれらを裏で支える管理者機能まで、一連の体験がシームレスに提供されています。
+
+---
+
+## 🔮 今後の展望
+
+このアプリは、今後も“違いを楽しむ場”として成長を続けます。考えられる次のステップは…
+
+- [ ] **ユーザー認証機能（Supabase Auth）**
+  - ソーシャルログインを導入し、「マイページ」で自分の投票・コメント履歴を振り返れるようにする。
+- [ ] **高度な管理者ダッシュボード**
+  - 投票の傾向などを分析できるアナリティクス機能を追加する。
+- [ ] **多様な投票フォーマット**
+  - 3択以上の質問や、画像を使った投票など、新しい形式を導入する。
+- [ ] **通知機能**
+  - 新しい質問が公開されたら、希望するユーザーにプッシュ通知を送る。
