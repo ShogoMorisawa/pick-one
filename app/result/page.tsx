@@ -14,7 +14,7 @@ export async function generateMetadata(props: any): Promise<Metadata> {
     return { title: "結果" };
   }
 
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL!;
   const supabase = await createClient();
   const { data: question } = await supabase
     .from("questions")
@@ -24,7 +24,7 @@ export async function generateMetadata(props: any): Promise<Metadata> {
 
   const title = question ? `「${question.question_text}」の結果` : "結果";
   const description = "みんなはどっちに投票した？結果を見てみよう！";
-  const ogImage = `${siteUrl}/og/${questionId}`;
+  const ogImage = `${siteUrl}/og-test`;
 
   return {
     title,
